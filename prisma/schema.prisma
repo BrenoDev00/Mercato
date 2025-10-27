@@ -79,11 +79,11 @@ model CategoriesOnProducts{
 
 model Order {
   id String @id @default(uuid())
-  status Boolean 
-  paymentMethod String @map("payment_method")
+  status Int @default(2)
+  paymentMethod Int @map("payment_method")
   totalInCents Int @map("total_in_cents")
   createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @map("updated_at")
+  updatedAt DateTime? @map("updated_at")
 
   userId String @map("user_id")
   user User @relation(fields: [userId],  references: [id])

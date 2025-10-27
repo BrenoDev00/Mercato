@@ -7,6 +7,7 @@ import userRouter from "./routers/user-router.js";
 import authRouter from "./routers/auth-router.js";
 import roleRouter from "./routers/role-router.js";
 import productRouter from "./routers/product-router.js";
+import orderRouter from "./routers/order-router.js";
 
 const app: Express = express();
 
@@ -23,6 +24,8 @@ app.use("/user", userRouter);
 app.use("/role", roleRouter);
 
 app.use("/product", productRouter);
+
+app.use("/order", orderRouter);
 
 app.use(errorHandler);
 

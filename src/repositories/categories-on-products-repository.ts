@@ -1,4 +1,4 @@
-import { ICategoriesOnProductsRepository } from "../types/repositories/categories-on-products.type.js";
+import { ICategoriesOnProductsRepository } from "../types/repositories/categories-on-products-repository.type.js";
 import { prisma } from "../config/prisma-client.js";
 
 class CategoriesOnProducts implements ICategoriesOnProductsRepository {

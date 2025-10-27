@@ -22,3 +22,5 @@ export const PRODUCT_NOT_FOUND = "Produto não encontrado.";
 
 export const PRODUCT_CATEGORY_NOT_FOUND =
   "Categoria do produto não encontrada.";
+
+export const ORDER_SUCCESSFULLY_ADDED = "Pedido adicionado com sucesso!";

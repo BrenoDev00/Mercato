@@ -5,7 +5,7 @@ export interface IProductController {
 
   addProduct(req: Request, res: Response): Promise<Response>;
 
-  // editProduct(req: Request, res: Response): Promise<Response>;
+  editProduct(req: Request, res: Response): Promise<Response>;
 
   deleteProduct(req: Request, res: Response): Promise<Response>;
 }
