@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  id String @id @default(uuid())
+  name String @db.VarChar(64)
+  email String @unique 
+  status Boolean @default(true)
+  password String 
+  
+  roleId String @map("role_id")
+  role Role @relation(fields: [roleId], references: [id])
+
+  @@map("user")
+}
+
+model Role {
+  id String @id @default(uuid())
+  name String @unique
+  description String 
+  status Boolean @default(true)
+
+  users User[]
+
+  @@map("role")
+}
+
+model Product {
+  id String @id @default(uuid())
+  name String 
+  description String
+  priceInCents Int @map("price_in_cents")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  categoriesOnProducts CategoriesOnProducts[]
+
+  @@map("product")
+}
+
+model ProductCategory{
+  id String @id @default(uuid())
+  name String 
+
+  categoriesOnProducts CategoriesOnProducts[]
+
+  @@map("product_category")
+}
+
+model CategoriesOnProducts{
+  id String @id @default(uuid())
+
+  categoryId String @map("category_id")
+  category ProductCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  productId String @map("product_id")
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("categories_on_products")
+  @@unique([productId, categoryId])
+}
