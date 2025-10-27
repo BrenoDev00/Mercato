@@ -24,6 +24,8 @@ model User {
   roleId String @map("role_id")
   role Role @relation(fields: [roleId], references: [id])
 
+  orders Order[]
+
   @@map("user")
 }
 
@@ -46,6 +48,9 @@ model Product {
   createdAt DateTime @default(now()) @map("created_at")
 
   categoriesOnProducts CategoriesOnProducts[]
+
+  ordersOnProducts OrdersOnProducts[]
+
 
   @@map("product")
 }
@@ -70,4 +75,34 @@ model CategoriesOnProducts{
 
   @@map("categories_on_products")
   @@unique([productId, categoryId])
+}
+
+model Order {
+  id String @id @default(uuid())
+  status Boolean 
+  paymentMethod String @map("payment_method")
+  totalInCents Int @map("total_in_cents")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @map("updated_at")
+
+  userId String @map("user_id")
+  user User @relation(fields: [userId],  references: [id])
+
+  ordersOnProducts OrdersOnProducts[]
+
+  @@map("order") 
+}
+
+model OrdersOnProducts{
+  id String @id @default(uuid())
+  
+  orderId String @map("order_id")
+  order Order @relation(fields: [orderId], references: [id])
+
+  productId String @map("product_id")
+  product Product @relation(fields: [productId], references: [id])
+
+  quantity Int
+
+  @@map("orders_on_products")
 }
