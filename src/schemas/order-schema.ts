@@ -8,9 +8,9 @@ const orderSchema = z.object({
     z.object({
       id: z.uuid(),
       quantity: z.int().min(1),
+      priceInCents: z.int().min(1),
     })
   ),
-  totalInCents: z.int().min(1),
 });
 
 export default orderSchema;

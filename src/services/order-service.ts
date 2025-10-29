@@ -5,10 +5,20 @@ import userRepository from "../repositories/user-repository.js";
 import { PRODUCT_NOT_FOUND, USER_NOT_FOUND } from "../utils/constants.js";
 import ordersOnProductsRepository from "../repositories/orders-on-products-respository.js";
 import productRepository from "../repositories/product-repository.js";
+import { OrderProduct } from "../types/order-product.type.js";
 
 class OrderService implements IOrderService {
+  private calculateTotalInCents(productsList: OrderProduct[]): number {
+    const calculatedTotal = productsList.reduce(
+      (sum, item) => sum + item.priceInCents * item.quantity,
+      0
+    );
+
+    return calculatedTotal;
+  }
+
   async addOrder(orderData: NewOrder): Promise<void> {
-    const { userId, paymentMethod, totalInCents, products } = orderData;
+    const { userId, paymentMethod, products } = orderData;
 
     const searchedUser = await userRepository.getUserById(userId);
 
@@ -23,6 +33,8 @@ class OrderService implements IOrderService {
         throw new Error(PRODUCT_NOT_FOUND);
       }
     }
+
+    const totalInCents = this.calculateTotalInCents(products);
 
     const orderId = await orderRepository.addOrder({
       userId,
