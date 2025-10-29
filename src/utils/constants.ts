@@ -24,3 +24,6 @@ export const PRODUCT_CATEGORY_NOT_FOUND =
   "Categoria do produto não encontrada.";
 
 export const ORDER_SUCCESSFULLY_ADDED = "Pedido adicionado com sucesso!";
+
+export const ERROR_ADDING_ORDER =
+  "Erro ao adicionar pedido. Tente novamente daqui alguns minutos.";

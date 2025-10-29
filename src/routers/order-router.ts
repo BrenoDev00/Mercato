@@ -8,13 +8,14 @@ import orderSchema from "../schemas/order-schema.js";
 
 const orderRouter: Router = Router();
 
-orderRouter.use(authValidator);
-
 orderRouter.post(
   "/new",
+  authValidator,
   roleValidator([Role.USER]),
   schemaValidator(orderSchema),
   orderController.addOrder
 );
+
+orderRouter.post("/payment-webhook", orderController.getWebhookResponse);
 
 export default orderRouter;

@@ -3,9 +3,14 @@ import { Request, Response } from "express";
 import { IOrderController } from "../types/controllers/order-controller.type.js";
 import orderService from "../services/order-service.js";
 import { StatusCode } from "../types/status-code.type.js";
-import { PRODUCT_NOT_FOUND, USER_NOT_FOUND } from "../utils/constants.js";
+import {
+  ERROR_ADDING_ORDER,
+  PRODUCT_NOT_FOUND,
+  USER_NOT_FOUND,
+} from "../utils/constants.js";
 import NotFoundError from "../utils/errors/not-found-error.js";
 import InternalError from "../utils/errors/internal-error.js";
+import UnavailableError from "../utils/errors/unavailable-error.js";
 
 class OrderController implements IOrderController {
   async addOrder(req: Request, res: Response): Promise<Response> {
@@ -22,9 +27,14 @@ class OrderController implements IOrderController {
       if (error.message === PRODUCT_NOT_FOUND)
         throw new NotFoundError(PRODUCT_NOT_FOUND);
 
+      if (error.message === ERROR_ADDING_ORDER)
+        throw new UnavailableError(ERROR_ADDING_ORDER);
+
       throw new InternalError();
     }
   }
+
+  async getWebhookResponse(req: Request, res: Response): Promise<Response> {}
 }
 
 const orderController = new OrderController();

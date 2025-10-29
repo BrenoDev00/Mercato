@@ -8,4 +8,5 @@ export enum StatusCode {
   NOT_FOUND = 404,
   CONFLICT = 409,
   INTERNAL_ERROR = 500,
+  UNAVAILABLE = 503,
 }

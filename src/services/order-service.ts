@@ -2,7 +2,11 @@ import { NewOrder } from "../types/new-order.type.js";
 import { IOrderService } from "../types/services/order-service.type.js";
 import orderRepository from "../repositories/order-repository.js";
 import userRepository from "../repositories/user-repository.js";
-import { PRODUCT_NOT_FOUND, USER_NOT_FOUND } from "../utils/constants.js";
+import {
+  ERROR_ADDING_ORDER,
+  PRODUCT_NOT_FOUND,
+  USER_NOT_FOUND,
+} from "../utils/constants.js";
 import ordersOnProductsRepository from "../repositories/orders-on-products-respository.js";
 import productRepository from "../repositories/product-repository.js";
 import { OrderProduct } from "../types/order-product.type.js";
@@ -64,6 +68,10 @@ class OrderService implements IOrderService {
       }
     }
 
+    const paymentUrl = await this.handleMercadoPagoPreference(products);
+
+    if (!paymentUrl) throw new Error(ERROR_ADDING_ORDER);
+
     const totalInCents = this.calculateTotalInCents(products);
 
     const orderId = await orderRepository.addOrder({
@@ -81,13 +89,11 @@ class OrderService implements IOrderService {
       });
     }
 
-    const paymentUrl = await this.handleMercadoPagoPreference(products);
+    return paymentUrl;
+  }
 
-    if (paymentUrl) {
-      return paymentUrl;
-    } else {
-      throw new Error();
-    }
+  private async handlePaymentWebhook(): Promise<void> {
+    //configurar o ngrok e depois url de desenvolvivmento do webhook
   }
 }
 
