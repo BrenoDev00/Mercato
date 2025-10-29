@@ -80,7 +80,6 @@ model CategoriesOnProducts{
 model Order {
   id String @id @default(uuid())
   status Int @default(2)
-  paymentMethod Int @map("payment_method")
   totalInCents Int @map("total_in_cents")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime? @map("updated_at")

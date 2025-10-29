@@ -6,6 +6,8 @@ import { PRODUCT_NOT_FOUND, USER_NOT_FOUND } from "../utils/constants.js";
 import ordersOnProductsRepository from "../repositories/orders-on-products-respository.js";
 import productRepository from "../repositories/product-repository.js";
 import { OrderProduct } from "../types/order-product.type.js";
+import { Preference } from "mercadopago";
+import { client } from "../config/mercado-pago-client.js";
 
 class OrderService implements IOrderService {
   private calculateTotalInCents(productsList: OrderProduct[]): number {
@@ -17,8 +19,36 @@ class OrderService implements IOrderService {
     return calculatedTotal;
   }
 
-  async addOrder(orderData: NewOrder): Promise<void> {
-    const { userId, paymentMethod, products } = orderData;
+  private async handleMercadoPagoPreference(
+    productsList: OrderProduct[]
+  ): Promise<string | undefined> {
+    const preference = new Preference(client);
+
+    const productItems = productsList.map((product) => {
+      return {
+        id: product.id,
+        title: product.title,
+        quantity: product.quantity,
+        unit_price: product.priceInCents / 100,
+      };
+    });
+
+    const preferenceResponse = await preference.create({
+      body: {
+        items: productItems,
+        payment_methods: {
+          excluded_payment_types: [{ id: "ticket" }],
+        },
+      },
+    });
+
+    console.log(preferenceResponse);
+
+    return preferenceResponse.init_point;
+  }
+
+  async addOrder(orderData: NewOrder): Promise<string> {
+    const { userId, products } = orderData;
 
     const searchedUser = await userRepository.getUserById(userId);
 
@@ -38,7 +68,6 @@ class OrderService implements IOrderService {
 
     const orderId = await orderRepository.addOrder({
       userId,
-      paymentMethod,
       totalInCents,
     });
 
@@ -51,10 +80,15 @@ class OrderService implements IOrderService {
         quantity,
       });
     }
-  }
 
-  // aqui ficaria a lógica para integrar com algum método de pagamento e
-  // posteriormente atualizar as colunas status e updated_at da tabela order.
+    const paymentUrl = await this.handleMercadoPagoPreference(products);
+
+    if (paymentUrl) {
+      return paymentUrl;
+    } else {
+      throw new Error();
+    }
+  }
 }
 
 const orderService = new OrderService();

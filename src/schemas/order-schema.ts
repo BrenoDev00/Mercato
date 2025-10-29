@@ -1,12 +1,11 @@
 import z from "zod";
-import { PaymentMethod } from "../types/payment-method.js";
 
 const orderSchema = z.object({
   userId: z.uuid(),
-  paymentMethod: z.enum(PaymentMethod),
   products: z.array(
     z.object({
       id: z.uuid(),
+      title: z.string().max(164).min(1),
       quantity: z.int().min(1),
       priceInCents: z.int().min(1),
     })
