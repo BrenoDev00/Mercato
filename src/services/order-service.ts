@@ -16,10 +16,9 @@ import { Preference } from "mercadopago";
 import { client } from "../config/mercado-pago-client.js";
 import { Request } from "express";
 import crypto from "node:crypto";
-import { PreferenceResponseData } from "../types/preference-response.type.js";
 
 class OrderService implements IOrderService {
-  private paymentId!: string;
+  private orderId: string = "";
 
   private calculateTotalInCents(productsList: OrderProduct[]): number {
     const calculatedTotal = productsList.reduce(
@@ -32,7 +31,7 @@ class OrderService implements IOrderService {
 
   private async handleMercadoPagoPreference(
     productsList: OrderProduct[]
-  ): Promise<PreferenceResponseData> {
+  ): Promise<{ paymentUrl: string | undefined }> {
     const preference = new Preference(client);
 
     const productItems = productsList.map((product) => {
@@ -47,6 +46,7 @@ class OrderService implements IOrderService {
     const preferenceResponse = await preference.create({
       body: {
         items: productItems,
+        notification_url: process.env.MERCADO_PAGO_NOTIFICATION_URL,
         payment_methods: {
           excluded_payment_types: [{ id: "ticket" }],
         },
@@ -55,7 +55,6 @@ class OrderService implements IOrderService {
 
     return {
       paymentUrl: preferenceResponse.init_point,
-      paymentId: preferenceResponse.id,
     };
   }
 
@@ -78,9 +77,9 @@ class OrderService implements IOrderService {
 
     const preferenceResponse = await this.handleMercadoPagoPreference(products);
 
-    const { paymentId, paymentUrl } = preferenceResponse;
+    const { paymentUrl } = preferenceResponse;
 
-    if (!paymentUrl || !paymentId) throw new Error(ERROR_ADDING_ORDER);
+    if (!paymentUrl) throw new Error(ERROR_ADDING_ORDER);
 
     const totalInCents = this.calculateTotalInCents(products);
 
@@ -99,16 +98,13 @@ class OrderService implements IOrderService {
       });
     }
 
-    console.log("payment id prop", paymentId);
-
-    this.paymentId = paymentId;
+    this.orderId = orderId;
 
     return paymentUrl;
   }
 
-  private async handlePaymentStatus(): Promise<void> {
-    console.log("payment id da request", this.paymentId);
-    const paymentUrl = `${BASE_MERCADO_PAGO_API_URL}/payments/${this.paymentId}`;
+  private async updateOrder(paymentId: string): Promise<void> {
+    const paymentUrl = `${BASE_MERCADO_PAGO_API_URL}/payments/${paymentId}`;
 
     let paymentResponse;
 
@@ -121,15 +117,22 @@ class OrderService implements IOrderService {
       });
 
       paymentResponse = await request.json();
-
-      console.log("payment response: ", paymentResponse);
     } catch (error) {
-      throw error;
+      throw new Error("payment request error: " + error);
+    }
+
+    if (paymentResponse) {
+      const { status, date_last_updated } = paymentResponse;
+
+      await orderRepository.updateOrderById(this.orderId, {
+        status,
+        updatedAt: date_last_updated,
+      });
     }
   }
 
   async handleHmackVerification(req: Request): Promise<void> {
-    const { headers } = req;
+    const { headers, body } = req;
 
     const xSignature = headers["x-signature"] as string;
     const xRequestId = headers["x-request-id"] as string;
@@ -137,6 +140,10 @@ class OrderService implements IOrderService {
     const dataID = req.query["data.id"];
 
     const parts = xSignature.split(",");
+
+    if (body.type !== "payment" || !dataID) {
+      return;
+    }
 
     let ts;
     let hash;
@@ -167,7 +174,7 @@ class OrderService implements IOrderService {
       throw new Error(HMAC_VERIFICATION_FAILED);
     }
 
-    await this.handlePaymentStatus();
+    await this.updateOrder(dataID as string);
   }
 }
 

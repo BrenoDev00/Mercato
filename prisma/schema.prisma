@@ -79,7 +79,7 @@ model CategoriesOnProducts{
 
 model Order {
   id String @id @default(uuid())
-  status Int @default(2)
+  status String @default("pending")
   totalInCents Int @map("total_in_cents")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime? @map("updated_at")
