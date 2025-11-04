@@ -16,6 +16,9 @@ orderRouter.post(
   orderController.addOrder
 );
 
-orderRouter.post("/payment-webhook", orderController.getWebhookResponse);
+orderRouter.post(
+  "/payment-webhook",
+  orderController.getMercadoPagoWebhookResponse
+);
 
 export default orderRouter;

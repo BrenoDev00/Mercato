@@ -5,14 +5,12 @@ import orderService from "../services/order-service.js";
 import { StatusCode } from "../types/status-code.type.js";
 import {
   ERROR_ADDING_ORDER,
-  HMAC_VERIFICATION_FAILED,
   PRODUCT_NOT_FOUND,
   USER_NOT_FOUND,
 } from "../utils/constants.js";
 import NotFoundError from "../utils/errors/not-found-error.js";
 import InternalError from "../utils/errors/internal-error.js";
 import UnavailableError from "../utils/errors/unavailable-error.js";
-import BadRequestError from "../utils/errors/bad-request-error.js";
 
 class OrderController implements IOrderController {
   async addOrder(req: Request, res: Response): Promise<Response> {
@@ -36,15 +34,15 @@ class OrderController implements IOrderController {
     }
   }
 
-  async getWebhookResponse(req: Request, res: Response): Promise<Response> {
+  async getMercadoPagoWebhookResponse(
+    req: Request,
+    res: Response
+  ): Promise<Response> {
     try {
-      await orderService.handleHmackVerification(req);
+      await orderService.updateOrder(req);
 
       return res.status(StatusCode.OK).send();
-    } catch (error: any) {
-      if (error.message === HMAC_VERIFICATION_FAILED)
-        throw new BadRequestError(HMAC_VERIFICATION_FAILED);
-
+    } catch {
       throw new InternalError();
     }
   }

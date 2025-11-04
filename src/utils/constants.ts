@@ -28,6 +28,4 @@ export const ORDER_SUCCESSFULLY_ADDED = "Pedido adicionado com sucesso!";
 export const ERROR_ADDING_ORDER =
   "Erro ao adicionar pedido. Tente novamente daqui alguns minutos.";
 
-export const HMAC_VERIFICATION_FAILED = "Verificação HMAC de segurança falhou.";
-
 export const BASE_MERCADO_PAGO_API_URL = "https://api.mercadopago.com/v1";
