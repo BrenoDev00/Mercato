@@ -4,4 +4,6 @@ export interface IOrderController {
   addOrder(req: Request, res: Response): Promise<Response>;
 
   getMercadoPagoWebhookResponse(req: Request, res: Response): Promise<Response>;
+
+  getOrdersInfo(_: Request, res: Response): Promise<Response>;
 }

@@ -13,6 +13,8 @@ import productRepository from "../repositories/product-repository.js";
 import { OrderProduct } from "../types/order-product.type.js";
 import { Request } from "express";
 import mercadoPagoPaymentService from "./mercado-pago-payment-service.js";
+import { OrdersInfoResponse } from "../types/orders-info-response.type.js";
+import { OrderStatus } from "../types/order-status.type.js";
 
 class OrderService implements IOrderService {
   private orderId: string = "";
@@ -100,6 +102,55 @@ class OrderService implements IOrderService {
         updatedAt: date_last_updated,
       });
     }
+  }
+
+  async getOrdersInfo(): Promise<OrdersInfoResponse> {
+    const ordersData = await orderRepository.getOrdersInfo();
+
+    const formattedOrdersInfo: OrdersInfoResponse = {
+      total: ordersData.length,
+      ordersInfo: ordersData.map((orderInfo) => {
+        const {
+          id,
+          status,
+          totalInCents,
+          createdAt,
+          updatedAt,
+          user,
+          ordersOnProducts,
+        } = orderInfo;
+
+        return {
+          id,
+          status: status as OrderStatus,
+          totalInCents,
+          createdAt,
+          updatedAt,
+          buyer: user,
+          products: ordersOnProducts.map((orderOnProduct) => {
+            const { id, name, priceInCents, categoriesOnProducts } =
+              orderOnProduct.product;
+
+            return {
+              id,
+              name,
+              quantity: orderOnProduct.quantity,
+              priceInCents,
+              categories: categoriesOnProducts.map((categoryOnProduct) => {
+                const { category } = categoryOnProduct;
+
+                return {
+                  id: category.id,
+                  name: category.name,
+                };
+              }),
+            };
+          }),
+        };
+      }),
+    };
+
+    return formattedOrdersInfo;
   }
 }
 

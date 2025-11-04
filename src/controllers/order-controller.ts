@@ -46,6 +46,16 @@ class OrderController implements IOrderController {
       throw new InternalError();
     }
   }
+
+  async getOrdersInfo(_: Request, res: Response): Promise<Response> {
+    try {
+      const ordersInfo = await orderService.getOrdersInfo();
+
+      return res.status(StatusCode.OK).send(ordersInfo);
+    } catch {
+      throw new InternalError();
+    }
+  }
 }
 
 const orderController = new OrderController();

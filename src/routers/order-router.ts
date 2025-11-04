@@ -21,4 +21,11 @@ orderRouter.post(
   orderController.getMercadoPagoWebhookResponse
 );
 
+orderRouter.get(
+  "/orders-info",
+  authValidator,
+  roleValidator([Role.ADMIN]),
+  orderController.getOrdersInfo
+);
+
 export default orderRouter;
