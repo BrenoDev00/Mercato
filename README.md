@@ -21,6 +21,8 @@
 - ESLint e Prettier;
 - Gitflow;
 - Conventional Commits.
+## Modelo Entidade Relacionamento adaptado
+![MER](./MER.png)
 ## Como rodar a aplicação
 - Primeiramente, é necessário clonar o repositório localmente;
 - Após clonar o repositório localmente, é necessário instalar o PostgreSQL localmente caso não tenha;
