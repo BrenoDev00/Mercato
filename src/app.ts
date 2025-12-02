@@ -8,6 +8,8 @@ import authRouter from "./routers/auth-router.js";
 import roleRouter from "./routers/role-router.js";
 import productRouter from "./routers/product-router.js";
 import orderRouter from "./routers/order-router.js";
+import swaggerJson from "../swagger.json" with { type: "json" };
+import swaggerUi from "swagger-ui-express";
 
 const app: Express = express();
 
@@ -16,6 +18,8 @@ app.use(helmet());
 app.use(cors(corsOptions));
 
 app.use(express.json());
+
+app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerJson));
 
 app.use("/auth", authRouter);
 
