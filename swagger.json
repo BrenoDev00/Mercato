@@ -286,6 +286,70 @@
           }
         }
       }
+    },
+    "/order/new": {
+      "post": {
+        "security": [{ "BearerAuth": [] }],
+        "description": "Cadastra novo pedido de produtos pelo o usuário.",
+        "tags": ["Order"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userId": {
+                    "type": "string"
+                  },
+                  "products": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "title": {
+                          "type": "string"
+                        },
+                        "quantity": {
+                          "type": "number"
+                        },
+                        "priceInCents": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/order/payment-webhook": {
+      "post": {
+        "description": "Rota utilizada para receber resposta do webhook do Mercado Pago.",
+        "tags": ["Order"]
+      }
+    },
+    "/order/orders-info": {
+      "get": {
+        "description": "Obtém informações de pedidos realizados por usuários.",
+        "tags": ["Order"],
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "": {
+            "description": ""
+          }
+        }
+      }
     }
   },
   "components": {
