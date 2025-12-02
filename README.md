@@ -18,6 +18,7 @@
 - Zod;
 - Helmet;
 - Postman;
+- Swagger;
 - ESLint e Prettier;
 - Gitflow;
 - Conventional Commits.
