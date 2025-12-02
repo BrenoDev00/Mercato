@@ -128,6 +128,164 @@
           }
         }
       }
+    },
+    "/role/{id}": {
+      "put": {
+        "security": [{ "BearerAuth": [] }],
+        "description": "Atualiza dados de permissão.",
+        "tags": ["Role"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/product": {
+      "get": {
+        "security": [{ "BearerAuth": [] }],
+        "description": "Obtém todos os produtos cadastrados.",
+        "tags": ["Product"],
+        "responses": {
+          "": {
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "security": [{ "BearerAuth": [] }],
+        "description": "Cadastra novo produto.",
+        "tags": ["Product"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "priceInCents": {
+                    "type": "number"
+                  },
+                  "productCategoriesId": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/product/{id}": {
+      "put": {
+        "security": [{ "BearerAuth": [] }],
+        "description": "Atualiza dados de produto.",
+        "tags": ["Product"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "priceInCents": {
+                    "type": "number"
+                  },
+                  "productCategoriesId": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "security": [{ "BearerAuth": [] }],
+        "description": "Exclui produto.",
+        "tags": ["Product"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "": {
+            "description": ""
+          }
+        }
+      }
     }
   },
   "components": {
