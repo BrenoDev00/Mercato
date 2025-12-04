@@ -29,3 +29,5 @@ export const ERROR_ADDING_ORDER =
   "Erro ao adicionar pedido. Tente novamente daqui alguns minutos.";
 
 export const BASE_MERCADO_PAGO_API_URL = "https://api.mercadopago.com/v1";
+
+export const CEP_REGEX = /^[0-9]{5}-[0-9]{3}$/;

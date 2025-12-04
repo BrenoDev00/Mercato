@@ -1,5 +1,5 @@
 import { ProductData } from "../new-product.type.js";
-import { ProductWithCategoriesResponse } from "../product-with-categories-response.js";
+import { ProductWithCategoriesResponse } from "../product-with-categories-response.type.js";
 
 export interface IProductService {
   getProducts(): Promise<ProductWithCategoriesResponse>;

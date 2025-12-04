@@ -30,6 +30,40 @@
                   },
                   "roleId": {
                     "type": "string"
+                  },
+                  "address": {
+                    "type": "object",
+                    "required": [
+                      "cep",
+                      "street",
+                      "number",
+                      "city",
+                      "state",
+                      "country"
+                    ],
+                    "properties": {
+                      "cep": {
+                        "type": "string"
+                      },
+                      "street": {
+                        "type": "string"
+                      },
+                      "number": {
+                        "type": "number"
+                      },
+                      "additionalInformation": {
+                        "type": "string"
+                      },
+                      "city": {
+                        "type": "string"
+                      },
+                      "state": {
+                        "type": "string"
+                      },
+                      "country": {
+                        "type": "string"
+                      }
+                    }
                   }
                 }
               }

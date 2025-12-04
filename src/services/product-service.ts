@@ -7,7 +7,7 @@ import {
 } from "../utils/constants.js";
 import { ProductData } from "../types/new-product.type.js";
 import categoriesOnProducts from "../repositories/categories-on-products-repository.js";
-import { ProductWithCategoriesResponse } from "../types/product-with-categories-response.js";
+import { ProductWithCategoriesResponse } from "../types/product-with-categories-response.type.js";
 
 class ProductService implements IProductService {
   async getProducts(): Promise<ProductWithCategoriesResponse> {

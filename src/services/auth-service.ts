@@ -3,6 +3,7 @@ import { IAuthService } from "../types/services/auth-service.type.js";
 import userRepository from "../repositories/user-repository.js";
 import bcrypt, { hash } from "bcrypt";
 import roleService from "./role-service.js";
+import userAddressRepository from "../repositories/user-address-repository.js";
 import {
   EMAIL_ALREADY_IN_USE,
   INVALID_USER_CREDENTIALS,
@@ -11,29 +12,39 @@ import {
 } from "../utils/constants.js";
 import pkg from "jsonwebtoken";
 import { User } from "@prisma/client";
+import { NewUser } from "../types/new-user.type.js";
 
 class AuthService implements IAuthService {
-  async register(userData: Omit<User, "id">): Promise<User> {
+  async register(userData: NewUser): Promise<User> {
+    const { name, email, password, roleId } = userData;
+
     const userCredentials = await userRepository.getUserCredentialsByEmail(
-      userData.email
+      email
     );
 
     if (userCredentials?.email) {
       throw new Error(EMAIL_ALREADY_IN_USE);
     }
 
-    const roleId = await roleService.getRoleId(userData.roleId);
+    const searchedRoleId = await roleService.getRoleId(roleId);
 
-    if (!roleId) throw new Error(ROLE_NOT_FOUND);
+    if (!searchedRoleId) throw new Error(ROLE_NOT_FOUND);
 
-    const encryptedPassword = await hash(userData.password, 12);
+    const encryptedPassword = await hash(password, 12);
 
-    const user = await userRepository.addUser({
-      ...userData,
+    const addressId = await userAddressRepository.addUserAddress(
+      userData.address
+    );
+
+    const registeredUser = await userRepository.addUser({
+      name,
+      email,
+      roleId,
       password: encryptedPassword,
+      addressId,
     });
 
-    return user;
+    return registeredUser;
   }
 
   async login(loginData: Login): Promise<{ accessToken: string }> {

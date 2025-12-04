@@ -1,7 +1,7 @@
 import { User } from "@prisma/client";
 import { prisma } from "../config/prisma-client.js";
 import { IUserRepository } from "../types/repositories/user-repository.type.js";
-import { UserCredentials } from "../types/user-credentials.js";
+import { UserCredentials } from "../types/user-credentials.type.js";
 import { UserById } from "../types/user-by-id.type.js";
 
 class UserRepository implements IUserRepository {
@@ -40,7 +40,7 @@ class UserRepository implements IUserRepository {
     return userCredentials;
   }
 
-  async addUser(userData: Omit<User, "id">): Promise<User> {
+  async addUser(userData: Omit<User, "id" | "status">): Promise<User> {
     const user = await prisma.user.create({ data: userData });
 
     return user;

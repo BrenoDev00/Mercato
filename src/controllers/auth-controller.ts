@@ -19,9 +19,9 @@ class AuthController implements IAuthController {
     const { body } = req;
 
     try {
-      const user = await authService.register(body);
+      const registeredUser = await authService.register(body);
 
-      return res.status(StatusCode.CREATED).send(user);
+      return res.status(StatusCode.CREATED).send(registeredUser);
     } catch (error: any) {
       if (error.message === EMAIL_ALREADY_IN_USE)
         throw new ConflictError(EMAIL_ALREADY_IN_USE);
