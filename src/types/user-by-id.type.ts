@@ -1,3 +1,5 @@
+import { UserAddress } from "@prisma/client";
+
 export type UserById = {
   id: string;
   name: string;
@@ -7,4 +9,5 @@ export type UserById = {
     id: string;
     name: string;
   };
+  address: UserAddress;
 };

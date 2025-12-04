@@ -7,9 +7,9 @@ class UserService implements IUserService {
   async getUserById(id: string): Promise<UserById> {
     const user = await userRepository.getUserById(id);
 
-    if (user) return user;
+    if (!user) throw new Error(USER_NOT_FOUND);
 
-    throw new Error(USER_NOT_FOUND);
+    return user;
   }
 
   async changeUserStatus(id: string, status: boolean): Promise<void> {

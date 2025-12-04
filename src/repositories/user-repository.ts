@@ -21,6 +21,7 @@ class UserRepository implements IUserRepository {
             name: true,
           },
         },
+        address: true,
       },
     });
 
