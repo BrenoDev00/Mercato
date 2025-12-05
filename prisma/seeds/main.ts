@@ -1,10 +1,14 @@
 import { PrismaClient } from "@prisma/client";
 import { seedRoles } from "../seeds/seed-roles.js";
+import { seedUserAddresses } from "./seed-user-addresses.js";
+import { seedUsers } from "./seed-users.js";
 
 const main = async (): Promise<void> => {
   const prisma = new PrismaClient();
 
   await seedRoles(prisma);
+  await seedUserAddresses(prisma);
+  await seedUsers(prisma);
 };
 
 main()
