@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { userDtos } from "./dtos/user-dtos";
+import { userDtos } from "./dtos/user-dtos.js";
 
 export const seedUsers = async (prisma: PrismaClient): Promise<void> => {
   try {
@@ -11,7 +11,7 @@ export const seedUsers = async (prisma: PrismaClient): Promise<void> => {
       });
     }
 
-    console.log("Usuários adicionados com sucesso ✅");
+    console.log("\nUsuários adicionados com sucesso ✅");
   } catch (error) {
     console.error("Erro ao adicionar usuários ❌", error);
   }

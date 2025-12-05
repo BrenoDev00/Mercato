@@ -13,7 +13,7 @@ export const seedUserAddresses = async (
       });
     }
 
-    console.log("Endereços de usuários adicionados ✅");
+    console.log("\nEndereços de usuários adicionados ✅");
   } catch (error) {
     console.error("Erro ao adicionar endereços de usuários ❌", error);
   }

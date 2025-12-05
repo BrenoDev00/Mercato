@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { categoriesOnProductsDtos } from "./dtos/categories-on-products-dtos";
+import { categoriesOnProductsDtos } from "./dtos/categories-on-products-dtos.js";
 
 export const seedCategoriesOnProducts = async (
   prisma: PrismaClient
