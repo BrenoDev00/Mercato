@@ -11,7 +11,7 @@ const orderRouter: Router = Router();
 orderRouter.post(
   "/new",
   authValidator,
-  roleValidator([Role.USER]),
+  roleValidator([Role.USER, Role.ADMIN]),
   schemaValidator(orderSchema),
   orderController.addOrder
 );
