@@ -6,6 +6,7 @@ import { seedProducts } from "./seed-products.js";
 import { seedProductCategories } from "./seed-product-categories.js";
 import { seedCategoriesOnProducts } from "./seed-categories-on-products.js";
 import { seedOrders } from "./seed-orders.js";
+import { seedOrdersOnProducts } from "./see-orders-on-products.js";
 
 const executeSeeds = async (): Promise<void> => {
   const prisma = new PrismaClient();
@@ -17,6 +18,7 @@ const executeSeeds = async (): Promise<void> => {
   await seedProductCategories(prisma);
   await seedCategoriesOnProducts(prisma);
   await seedOrders(prisma);
+  await seedOrdersOnProducts(prisma);
 };
 
 executeSeeds()
