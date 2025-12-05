@@ -8,7 +8,7 @@
     "dev": "tsc-watch --onSuccess \"node dist/server.js\""
   },
   "prisma": {
-    "seed": "node --loader ts-node/esm prisma/seeds/main.ts"
+    "seed": "node --loader ts-node/esm prisma/seeds/execute-seeds.ts"
   },
   "author": "Breno",
   "license": "MIT",

@@ -11,8 +11,8 @@ export const seedRoles = async (prisma: PrismaClient): Promise<void> => {
       });
     }
 
-    console.log("\nPermissões criadas com sucesso ✅");
+    console.log("\nPermissões adicionadas com sucesso ✅");
   } catch (error) {
-    console.error("Erro ao criar permissões ❌: ", error);
+    console.error("Erro ao adicionar permissões ❌: ", error);
   }
 };
