@@ -3,6 +3,7 @@ import { seedRoles } from "./seed-roles.js";
 import { seedUserAddresses } from "./seed-user-addresses.js";
 import { seedUsers } from "./seed-users.js";
 import { seedProducts } from "./seed-products.js";
+import { seedProductCategories } from "./seed-product-categories.js";
 
 const executeSeeds = async (): Promise<void> => {
   const prisma = new PrismaClient();
@@ -11,6 +12,7 @@ const executeSeeds = async (): Promise<void> => {
   await seedUserAddresses(prisma);
   await seedUsers(prisma);
   await seedProducts(prisma);
+  await seedProductCategories(prisma);
 };
 
 executeSeeds()
