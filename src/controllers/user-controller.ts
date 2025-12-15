@@ -30,7 +30,7 @@ class UserController implements IUserController {
     const { body } = req;
 
     try {
-      await this.userService.changeStatus(id!, body.status);
+      await this.userService.updateStatus(id!, body.status);
 
       return res.status(StatusCode.NO_CONTENT).send();
     } catch (error: any) {

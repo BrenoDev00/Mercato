@@ -1,10 +1,11 @@
 import { Request, Response, NextFunction } from "express";
-import userService from "../services/user-service.js";
+import UserService from "../services/user-service.js";
 import NotFoundError from "../utils/errors/not-found-error.js";
 import { USER_NOT_FOUND, USER_UNAUTHORIZED } from "../utils/constants.js";
 import UnauthorizedError from "../utils/errors/unauthorized-error.js";
 import { Role } from "../types/role.type.js";
 import pkg, { JwtPayload } from "jsonwebtoken";
+import UserRepository from "../repositories/user-repository.js";
 
 const roleValidator = (permittedRoles: Role[]) => {
   return async (
@@ -24,7 +25,11 @@ const roleValidator = (permittedRoles: Role[]) => {
 
     const userId = decodedToken.id;
 
-    const searchedUser = await userService.getUserById(userId);
+    const userRepository = new UserRepository();
+
+    const userService = new UserService(userRepository);
+
+    const searchedUser = await userService.getById(userId);
 
     if (!searchedUser) throw new NotFoundError(USER_NOT_FOUND);
 

@@ -14,12 +14,12 @@ class UserService implements IUserService {
     return user;
   }
 
-  async changeStatus(id: string, status: boolean): Promise<void> {
+  async updateStatus(id: string, status: boolean): Promise<void> {
     const searchedUser = await this.userRepository.findById(id);
 
     if (!searchedUser) throw new Error(USER_NOT_FOUND);
 
-    await this.userRepository.changeStatus(id, status);
+    await this.userRepository.updateStatus(id, status);
   }
 }
 

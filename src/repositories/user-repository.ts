@@ -45,7 +45,7 @@ class UserRepository implements IUserRepository {
     return user;
   }
 
-  async changeStatus(id: string, status: boolean): Promise<void> {
+  async updateStatus(id: string, status: boolean): Promise<void> {
     await prisma.user.update({
       data: {
         status: status,

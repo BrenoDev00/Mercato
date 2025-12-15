@@ -9,5 +9,5 @@ export interface IUserRepository {
 
   create(userData: Omit<User, "id" | "status">): Promise<User>;
 
-  changeStatus(id: string, status: boolean): Promise<void>;
+  updateStatus(id: string, status: boolean): Promise<void>;
 }
