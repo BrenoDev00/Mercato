@@ -6,7 +6,7 @@ import UserRepository from "../repositories/user-repository.js";
 class UserService implements IUserService {
   constructor(private readonly userRepository: UserRepository) {}
 
-  async getById(id: string): Promise<UserById> {
+  async listById(id: string): Promise<UserById> {
     const user = await this.userRepository.findById(id);
 
     if (!user) throw new Error(USER_NOT_FOUND);
@@ -14,12 +14,12 @@ class UserService implements IUserService {
     return user;
   }
 
-  async updateStatus(id: string, status: boolean): Promise<void> {
+  async updateStatusById(id: string, status: boolean): Promise<void> {
     const searchedUser = await this.userRepository.findById(id);
 
     if (!searchedUser) throw new Error(USER_NOT_FOUND);
 
-    await this.userRepository.updateStatus(id, status);
+    await this.userRepository.updateStatusById(id, status);
   }
 }
 

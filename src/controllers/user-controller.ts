@@ -14,7 +14,7 @@ class UserController implements IUserController {
     const { id } = req.params;
 
     try {
-      const user = await this.userService.getById(id!);
+      const user = await this.userService.listById(id!);
 
       return res.status(StatusCode.OK).send(user);
     } catch (error: any) {
@@ -30,7 +30,7 @@ class UserController implements IUserController {
     const { body } = req;
 
     try {
-      await this.userService.updateStatus(id!, body.status);
+      await this.userService.updateStatusById(id!, body.status);
 
       return res.status(StatusCode.NO_CONTENT).send();
     } catch (error: any) {
