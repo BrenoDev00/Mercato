@@ -12,7 +12,7 @@
     "/auth/registration": {
       "post": {
         "description": "Cadastra novo usuário.",
-        "tags": ["Registration"],
+        "tags": ["Authentication"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -80,7 +80,7 @@
     "/auth/login": {
       "post": {
         "description": "Autentica usuário.",
-        "tags": ["Login"],
+        "tags": ["Authentication"],
         "requestBody": {
           "content": {
             "application/json": {
