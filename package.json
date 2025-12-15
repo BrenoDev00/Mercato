@@ -1,7 +1,7 @@
 {
   "name": "auth-node",
   "version": "1.0.0",
-  "description": "REST API de um sistema administrativo de mercado, incluindo módulo de pedidos de produtos realizados por usuários.",
+  "description": "REST API de um sistema administrativo de mercado, incluindo módulo de pedidos de produtos realizados por usuários e integração de pagamento com o Mercado Pago.",
   "main": "dist/server.js",
   "type": "module",
   "scripts": {
