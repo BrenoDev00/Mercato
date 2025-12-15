@@ -6,12 +6,12 @@ import RoleRepository from "../repositories/role-repository.js";
 class RoleService implements IRoleService {
   constructor(private readonly roleRepository: RoleRepository) {}
 
-  async updateRole(roleData: Role): Promise<Role | null> {
+  async updateRoleById(roleData: Role): Promise<Role | null> {
     const searchedRole = await this.roleRepository.findRoleId(roleData.id);
 
     if (!searchedRole) throw new Error(ROLE_NOT_FOUND);
 
-    const role = await this.roleRepository.updateRole(roleData);
+    const role = await this.roleRepository.updateRoleById(roleData);
 
     return role;
   }

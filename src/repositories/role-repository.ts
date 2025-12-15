@@ -16,7 +16,7 @@ class RoleRepository implements IRoleRepository {
     return roleId;
   }
 
-  async updateRole(roleData: Role): Promise<Role | null> {
+  async updateRoleById(roleData: Role): Promise<Role | null> {
     const role = await prisma.role.update({
       where: {
         id: roleData.id,

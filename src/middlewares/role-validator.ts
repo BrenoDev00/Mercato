@@ -29,7 +29,7 @@ const roleValidator = (permittedRoles: Role[]) => {
 
     const userService = new UserService(userRepository);
 
-    const searchedUser = await userService.getById(userId);
+    const searchedUser = await userService.listById(userId);
 
     if (!searchedUser) throw new NotFoundError(USER_NOT_FOUND);
 

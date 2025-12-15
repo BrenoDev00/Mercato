@@ -14,7 +14,7 @@ class RoleController implements IRoleController {
     const { id } = req.params;
 
     try {
-      const role = await this.roleService.updateRole({ ...body, id: id });
+      const role = await this.roleService.updateRoleById({ ...body, id: id });
 
       return res.status(200).send(role);
     } catch (error: any) {
