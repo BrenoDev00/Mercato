@@ -2,7 +2,7 @@ import { Login } from "../types/login.type.js";
 import { IAuthService } from "../types/services/auth-service.type.js";
 import UserRepository from "../repositories/user-repository.js";
 import bcrypt, { hash } from "bcrypt";
-import userAddressRepository from "../repositories/user-address-repository.js";
+import UserAddressRepository from "../repositories/user-address-repository.js";
 import {
   EMAIL_ALREADY_IN_USE,
   INVALID_USER_CREDENTIALS,
@@ -38,9 +38,7 @@ class AuthService implements IAuthService {
 
     const encryptedPassword = await hash(password, 12);
 
-    const addressId = await this.userAddressRepository.addUserAddress(
-      userData.address
-    );
+    const addressId = await this.userAddressRepository.create(userData.address);
 
     const registeredUser = await this.userRepository.create({
       name,

@@ -3,15 +3,13 @@ import { prisma } from "../config/prisma-client.js";
 import { IUserAddressRepository } from "../types/repositories/user-address-repository.type.js";
 
 class UserAddressRepository implements IUserAddressRepository {
-  async addUserAddress(addressData: Omit<UserAddress, "id">): Promise<string> {
-    const addedAddress = await prisma.userAddress.create({
+  async create(addressData: Omit<UserAddress, "id">): Promise<string> {
+    const createdAddress = await prisma.userAddress.create({
       data: addressData,
     });
 
-    return addedAddress.id;
+    return createdAddress.id;
   }
 }
 
-const userAddressRepository = new UserAddressRepository();
-
-export default userAddressRepository;
+export default UserAddressRepository;
