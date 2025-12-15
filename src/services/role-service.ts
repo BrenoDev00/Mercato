@@ -6,12 +6,6 @@ import RoleRepository from "../repositories/role-repository.js";
 class RoleService implements IRoleService {
   constructor(private readonly roleRepository: RoleRepository) {}
 
-  async getRoleId(id: string): Promise<{ id: string } | null> {
-    const roleId = await this.roleRepository.findRoleId(id);
-
-    return roleId;
-  }
-
   async updateRole(roleData: Role): Promise<Role | null> {
     const searchedRole = await this.roleRepository.findRoleId(roleData.id);
 

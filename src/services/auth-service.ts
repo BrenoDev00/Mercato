@@ -1,8 +1,7 @@
 import { Login } from "../types/login.type.js";
 import { IAuthService } from "../types/services/auth-service.type.js";
-import userRepository from "../repositories/user-repository.js";
+import UserRepository from "../repositories/user-repository.js";
 import bcrypt, { hash } from "bcrypt";
-import roleService from "./role-service.js";
 import userAddressRepository from "../repositories/user-address-repository.js";
 import {
   EMAIL_ALREADY_IN_USE,
@@ -13,12 +12,19 @@ import {
 import pkg from "jsonwebtoken";
 import { User } from "@prisma/client";
 import { NewUser } from "../types/new-user.type.js";
+import RoleRepository from "../repositories/role-repository.js";
 
 class AuthService implements IAuthService {
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly userAddressRepository: UserAddressRepository,
+    private readonly roleRepository: RoleRepository
+  ) {}
+
   async register(userData: NewUser): Promise<User> {
     const { name, email, password, roleId } = userData;
 
-    const userCredentials = await userRepository.getUserCredentialsByEmail(
+    const userCredentials = await this.userRepository.findCredentialsByEmail(
       email
     );
 
@@ -26,17 +32,17 @@ class AuthService implements IAuthService {
       throw new Error(EMAIL_ALREADY_IN_USE);
     }
 
-    const searchedRoleId = await roleService.getRoleId(roleId);
+    const searchedRoleId = await this.roleRepository.findRoleId(roleId);
 
     if (!searchedRoleId) throw new Error(ROLE_NOT_FOUND);
 
     const encryptedPassword = await hash(password, 12);
 
-    const addressId = await userAddressRepository.addUserAddress(
+    const addressId = await this.userAddressRepository.addUserAddress(
       userData.address
     );
 
-    const registeredUser = await userRepository.addUser({
+    const registeredUser = await this.userRepository.create({
       name,
       email,
       roleId,
@@ -48,9 +54,8 @@ class AuthService implements IAuthService {
   }
 
   async login(loginData: Login): Promise<{ accessToken: string }> {
-    const userCredentialsData = await userRepository.getUserCredentialsByEmail(
-      loginData.email
-    );
+    const userCredentialsData =
+      await this.userRepository.findCredentialsByEmail(loginData.email);
 
     if (!userCredentialsData) throw new Error(USER_NOT_FOUND);
 
@@ -78,6 +83,4 @@ class AuthService implements IAuthService {
   }
 }
 
-const authService = new AuthService();
-
-export default authService;
+export default AuthService;

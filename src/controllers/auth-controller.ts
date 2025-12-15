@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from "express";
 import { IAuthController } from "../types/controllers/auth-controller.type.js";
-import authService from "../services/auth-service.js";
 import { StatusCode } from "../types/status-code.type.js";
 import InternalError from "../utils/errors/internal-error.js";
 import {
@@ -13,13 +12,16 @@ import {
 import NotFoundError from "../utils/errors/not-found-error.js";
 import ConflictError from "../utils/errors/conflict-error.js";
 import UnauthenticatedError from "../utils/errors/unauthenticated-error.js";
+import AuthService from "../services/auth-service.js";
 
 class AuthController implements IAuthController {
-  async register(req: Request, res: Response): Promise<Response> {
+  constructor(private readonly authService: AuthService) {}
+
+  async postRegister(req: Request, res: Response): Promise<Response> {
     const { body } = req;
 
     try {
-      const registeredUser = await authService.register(body);
+      const registeredUser = await this.authService.register(body);
 
       return res.status(StatusCode.CREATED).send(registeredUser);
     } catch (error: any) {
@@ -33,11 +35,11 @@ class AuthController implements IAuthController {
     }
   }
 
-  async login(req: Request, res: Response): Promise<Response> {
+  async postLogin(req: Request, res: Response): Promise<Response> {
     const { body } = req;
 
     try {
-      const accessToken = await authService.login(body);
+      const accessToken = await this.authService.login(body);
 
       return res.status(StatusCode.OK).send(accessToken);
     } catch (error: any) {
@@ -52,6 +54,4 @@ class AuthController implements IAuthController {
   }
 }
 
-const authController = new AuthController();
-
-export default authController;
+export default AuthController;
