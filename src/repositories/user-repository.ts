@@ -5,7 +5,7 @@ import { UserCredentials } from "../types/user-credentials.type.js";
 import { UserById } from "../types/user-by-id.type.js";
 
 class UserRepository implements IUserRepository {
-  async getUserById(id: string): Promise<UserById | null> {
+  async findById(id: string): Promise<UserById | null> {
     const user = await prisma.user.findUnique({
       where: {
         id: id,
@@ -28,9 +28,7 @@ class UserRepository implements IUserRepository {
     return user;
   }
 
-  async getUserCredentialsByEmail(
-    email: string
-  ): Promise<UserCredentials | null> {
+  async findCredentialsByEmail(email: string): Promise<UserCredentials | null> {
     const userCredentials = await prisma.user.findUnique({
       where: {
         email: email,
@@ -41,13 +39,13 @@ class UserRepository implements IUserRepository {
     return userCredentials;
   }
 
-  async addUser(userData: Omit<User, "id" | "status">): Promise<User> {
+  async create(userData: Omit<User, "id" | "status">): Promise<User> {
     const user = await prisma.user.create({ data: userData });
 
     return user;
   }
 
-  async changeUserStatus(id: string, status: boolean): Promise<void> {
+  async changeStatus(id: string, status: boolean): Promise<void> {
     await prisma.user.update({
       data: {
         status: status,
@@ -59,6 +57,4 @@ class UserRepository implements IUserRepository {
   }
 }
 
-const userRepository = new UserRepository();
-
-export default userRepository;
+export default UserRepository;

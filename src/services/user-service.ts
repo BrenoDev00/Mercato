@@ -1,26 +1,26 @@
-import userRepository from "../repositories/user-repository.js";
 import { IUserService } from "../types/services/user-service.type.js";
 import { USER_NOT_FOUND } from "../utils/constants.js";
 import { UserById } from "../types/user-by-id.type.js";
+import UserRepository from "../repositories/user-repository.js";
 
 class UserService implements IUserService {
-  async getUserById(id: string): Promise<UserById> {
-    const user = await userRepository.getUserById(id);
+  constructor(private readonly userRepository: UserRepository) {}
+
+  async getById(id: string): Promise<UserById> {
+    const user = await this.userRepository.findById(id);
 
     if (!user) throw new Error(USER_NOT_FOUND);
 
     return user;
   }
 
-  async changeUserStatus(id: string, status: boolean): Promise<void> {
-    const searchedUser = await userRepository.getUserById(id);
+  async changeStatus(id: string, status: boolean): Promise<void> {
+    const searchedUser = await this.userRepository.findById(id);
 
     if (!searchedUser) throw new Error(USER_NOT_FOUND);
 
-    await userRepository.changeUserStatus(id, status);
+    await this.userRepository.changeStatus(id, status);
   }
 }
 
-const userService = new UserService();
-
-export default userService;
+export default UserService;
