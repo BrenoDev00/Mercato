@@ -5,7 +5,7 @@ import { OrderStatus } from "../types/order-status.type.js";
 import { OrdersInfo } from "../types/orders-info.type.js";
 
 class OrderRepository implements IOrderRepository {
-  async addOrder(
+  async create(
     orderData: Omit<Order, "id" | "status" | "createdAt" | "updatedAt">
   ): Promise<string> {
     const addedOrder = await prisma.order.create({
@@ -15,7 +15,7 @@ class OrderRepository implements IOrderRepository {
     return addedOrder.id;
   }
 
-  async updateOrderById(
+  async update(
     orderId: string,
     orderData: { status: OrderStatus; updatedAt: string }
   ): Promise<void> {
@@ -32,7 +32,7 @@ class OrderRepository implements IOrderRepository {
     });
   }
 
-  async getOrdersInfo(): Promise<OrdersInfo> {
+  async findOrdersInfo(): Promise<OrdersInfo> {
     const ordersInfo = await prisma.order.findMany({
       select: {
         id: true,
@@ -70,6 +70,4 @@ class OrderRepository implements IOrderRepository {
   }
 }
 
-const orderRepository = new OrderRepository();
-
-export default orderRepository;
+export default OrderRepository;

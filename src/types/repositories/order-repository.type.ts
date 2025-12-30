@@ -3,12 +3,12 @@ import { OrderStatus } from "../order-status.type.js";
 import { OrdersInfo } from "../orders-info.type.js";
 
 export interface IOrderRepository {
-  addOrder(orderData: Omit<Order, "id">): Promise<string>;
+  create(orderData: Omit<Order, "id">): Promise<string>;
 
-  updateOrderById(
+  update(
     orderId: string,
     orderData: { status: OrderStatus; updatedAt: string }
   ): Promise<void>;
 
-  getOrdersInfo(): Promise<OrdersInfo>;
+  findOrdersInfo(): Promise<OrdersInfo>;
 }

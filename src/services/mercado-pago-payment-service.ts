@@ -6,7 +6,7 @@ import crypto from "node:crypto";
 import { client } from "../config/mercado-pago-client.js";
 
 class MercadoPagoPaymentService implements IMercadoPagoPaymentService {
-  async setMercadoPagoPreference(
+  async setPreference(
     productsList: OrderProduct[]
   ): Promise<string | undefined> {
     const preference = new Preference(client);
@@ -84,6 +84,4 @@ class MercadoPagoPaymentService implements IMercadoPagoPaymentService {
   }
 }
 
-const mercadoPagoPaymentService = new MercadoPagoPaymentService();
-
-export default mercadoPagoPaymentService;
+export default MercadoPagoPaymentService;

@@ -3,7 +3,7 @@ import { IOrdersOnProductsRepository } from "../types/repositories/orders-on-pro
 import { prisma } from "../config/prisma-client.js";
 
 class OrdersOnProductsRepository implements IOrdersOnProductsRepository {
-  async addOrderOnProduct(
+  async create(
     ordersOnProductsData: Omit<OrdersOnProducts, "id">
   ): Promise<void> {
     await prisma.ordersOnProducts.create({
@@ -12,6 +12,4 @@ class OrdersOnProductsRepository implements IOrdersOnProductsRepository {
   }
 }
 
-const ordersOnProductsRepository = new OrdersOnProductsRepository();
-
-export default ordersOnProductsRepository;
+export default OrdersOnProductsRepository;

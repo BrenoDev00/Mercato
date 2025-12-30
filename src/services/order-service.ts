@@ -1,23 +1,31 @@
 import { NewOrder } from "../types/new-order.type.js";
 import { IOrderService } from "../types/services/order-service.type.js";
-import orderRepository from "../repositories/order-repository.js";
-import userRepository from "../repositories/user-repository.js";
 import {
   BASE_MERCADO_PAGO_API_URL,
   ERROR_ADDING_ORDER,
   PRODUCT_NOT_FOUND,
   USER_NOT_FOUND,
 } from "../utils/constants.js";
-import ordersOnProductsRepository from "../repositories/orders-on-products-respository.js";
-import productRepository from "../repositories/product-repository.js";
 import { OrderProduct } from "../types/order-product.type.js";
 import { Request } from "express";
-import mercadoPagoPaymentService from "./mercado-pago-payment-service.js";
+import MercadoPagoPaymentService from "./mercado-pago-payment-service.js";
 import { OrdersInfoResponse } from "../types/orders-info-response.type.js";
 import { OrderStatus } from "../types/order-status.type.js";
+import UserRepository from "../repositories/user-repository.js";
+import ProductRepository from "../repositories/product-repository.js";
+import OrderRepository from "../repositories/order-repository.js";
+import OrdersOnProductsRepository from "../repositories/orders-on-products-respository.js";
 
 class OrderService implements IOrderService {
   private orderId: string = "";
+
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly productRepository: ProductRepository,
+    private readonly orderRepository: OrderRepository,
+    private readonly ordersOnProductsRepository: OrdersOnProductsRepository,
+    private readonly mercadoPagoPaymentService: MercadoPagoPaymentService
+  ) {}
 
   private calculateTotalInCents(productsList: OrderProduct[]): number {
     const calculatedTotal = productsList.reduce(
@@ -28,15 +36,15 @@ class OrderService implements IOrderService {
     return calculatedTotal;
   }
 
-  async addOrder(orderData: NewOrder): Promise<string> {
+  async create(orderData: NewOrder): Promise<string> {
     const { userId, products } = orderData;
 
-    const searchedUser = await userRepository.getUserById(userId);
+    const searchedUser = await this.userRepository.findById(userId);
 
     if (!searchedUser) throw new Error(USER_NOT_FOUND);
 
     for (const product of products) {
-      const searchedProductId = await productRepository.getProductId(
+      const searchedProductId = await this.productRepository.findProductId(
         product.id
       );
 
@@ -45,16 +53,15 @@ class OrderService implements IOrderService {
       }
     }
 
-    const preferenceResponse =
-      await mercadoPagoPaymentService.setMercadoPagoPreference(products);
-
-    const paymentUrl = preferenceResponse;
+    const paymentUrl = await this.mercadoPagoPaymentService.setPreference(
+      products
+    );
 
     if (!paymentUrl) throw new Error(ERROR_ADDING_ORDER);
 
     const totalInCents = this.calculateTotalInCents(products);
 
-    const orderId = await orderRepository.addOrder({
+    const orderId = await this.orderRepository.create({
       userId,
       totalInCents,
     });
@@ -62,7 +69,7 @@ class OrderService implements IOrderService {
     for (const product of products) {
       const { id, quantity } = product;
 
-      await ordersOnProductsRepository.addOrderOnProduct({
+      await this.ordersOnProductsRepository.create({
         productId: id,
         orderId,
         quantity,
@@ -74,8 +81,10 @@ class OrderService implements IOrderService {
     return paymentUrl;
   }
 
-  async updateOrder(req: Request): Promise<void> {
-    const dataID = await mercadoPagoPaymentService.handleHmackVerification(req);
+  async update(req: Request): Promise<void> {
+    const dataID = await this.mercadoPagoPaymentService.handleHmackVerification(
+      req
+    );
 
     const paymentUrl = `${BASE_MERCADO_PAGO_API_URL}/payments/${dataID}`;
 
@@ -97,15 +106,15 @@ class OrderService implements IOrderService {
     if (paymentResponse) {
       const { status, date_last_updated } = paymentResponse;
 
-      await orderRepository.updateOrderById(this.orderId, {
+      await this.orderRepository.update(this.orderId, {
         status,
         updatedAt: date_last_updated,
       });
     }
   }
 
-  async getOrdersInfo(): Promise<OrdersInfoResponse> {
-    const ordersData = await orderRepository.getOrdersInfo();
+  async listOrdersInfo(): Promise<OrdersInfoResponse> {
+    const ordersData = await this.orderRepository.findOrdersInfo();
 
     const formattedOrdersInfo: OrdersInfoResponse = {
       total: ordersData.length,
@@ -154,6 +163,4 @@ class OrderService implements IOrderService {
   }
 }
 
-const orderService = new OrderService();
-
-export default orderService;
+export default OrderService;
