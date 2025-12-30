@@ -26,26 +26,26 @@ const productRouter: Router = Router();
 
 productRouter.use(authValidator);
 
-productRouter.get("", productController.getProducts);
+productRouter.get("", productController.getProducts.bind(productController));
 
 productRouter.post(
   "/",
   roleValidator([Role.ADMIN, Role.EDITOR]),
   schemaValidator(productSchema),
-  productController.postProduct
+  productController.postProduct.bind(productController)
 );
 
 productRouter.put(
   "/:id",
   roleValidator([Role.ADMIN]),
   schemaValidator(productSchema),
-  productController.putProduct
+  productController.putProduct.bind(productController)
 );
 
 productRouter.delete(
   "/:id",
   roleValidator([Role.ADMIN]),
-  productController.deleteProduct
+  productController.deleteProduct.bind(productController)
 );
 
 export default productRouter;

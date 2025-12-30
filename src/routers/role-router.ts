@@ -20,7 +20,7 @@ roleRouter.put(
   "/:id",
   roleValidator([Role.ADMIN]),
   schemaValidator(roleSchema),
-  roleController.putRole
+  roleController.putRole.bind(roleController)
 );
 
 export default roleRouter;

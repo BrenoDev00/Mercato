@@ -35,19 +35,19 @@ orderRouter.post(
   authValidator,
   roleValidator([Role.USER, Role.ADMIN]),
   schemaValidator(orderSchema),
-  orderController.postOrder
+  orderController.postOrder.bind(orderController)
 );
 
 orderRouter.post(
   "/payment-webhook",
-  orderController.getMercadoPagoWebhookResponse
+  orderController.getMercadoPagoWebhookResponse.bind(orderController)
 );
 
 orderRouter.get(
   "/orders-info",
   authValidator,
   roleValidator([Role.ADMIN]),
-  orderController.getOrdersInfo
+  orderController.getOrdersInfo.bind(orderController)
 );
 
 export default orderRouter;

@@ -19,14 +19,14 @@ userRouter.use(authValidator);
 userRouter.get(
   "/:id",
   roleValidator([Role.ADMIN, Role.EDITOR]),
-  userController.getUser
+  userController.getUser.bind(userController)
 );
 
 userRouter.patch(
   "/status/:id",
   roleValidator([Role.ADMIN]),
   schemaValidator(statusSchema),
-  userController.patchStatus
+  userController.patchStatus.bind(userController)
 );
 
 export default userRouter;

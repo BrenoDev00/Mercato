@@ -24,13 +24,13 @@ const authRouter: Router = Router();
 authRouter.post(
   "/registration",
   schemaValidator(userSchema),
-  authController.postRegister
+  authController.postRegister.bind(authController)
 );
 
 authRouter.post(
   "/login",
   schemaValidator(loginSchema),
-  authController.postLogin
+  authController.postLogin.bind(authController)
 );
 
 export default authRouter;
