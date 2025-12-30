@@ -1,8 +1,5 @@
 export interface ICategoriesOnProductsRepository {
-  addCategoryOnProduct(categoryId: string, productId: string): Promise<void>;
+  create(categoryId: string, productId: string): Promise<void>;
 
-  editCategoryOnProduct(
-    productCategoriesId: string[],
-    productId: string
-  ): Promise<void>;
+  edit(productCategoriesId: string[], productId: string): Promise<void>;
 }

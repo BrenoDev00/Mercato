@@ -1,23 +1,19 @@
 import { ICategoriesOnProductsRepository } from "../types/repositories/categories-on-products-repository.type.js";
 import { prisma } from "../config/prisma-client.js";
 
-class CategoriesOnProducts implements ICategoriesOnProductsRepository {
-  async addCategoryOnProduct(
-    categoryId: string,
-    productId: string
-  ): Promise<void> {
+class CategoriesOnProductsRepository
+  implements ICategoriesOnProductsRepository
+{
+  async create(categoryId: string, productId: string): Promise<void> {
     await prisma.categoriesOnProducts.create({
       data: {
-        categoryId: categoryId,
-        productId: productId,
+        categoryId,
+        productId,
       },
     });
   }
 
-  async editCategoryOnProduct(
-    productCategoriesId: string[],
-    productId: string
-  ): Promise<void> {
+  async edit(productCategoriesId: string[], productId: string): Promise<void> {
     await prisma.categoriesOnProducts.deleteMany({
       where: {
         productId,
@@ -35,6 +31,4 @@ class CategoriesOnProducts implements ICategoriesOnProductsRepository {
   }
 }
 
-const categoriesOnProducts = new CategoriesOnProducts();
-
-export default categoriesOnProducts;
+export default CategoriesOnProductsRepository;

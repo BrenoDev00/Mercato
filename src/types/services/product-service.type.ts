@@ -2,15 +2,15 @@ import { ProductData } from "../new-product.type.js";
 import { ProductWithCategoriesResponse } from "../product-with-categories-response.type.js";
 
 export interface IProductService {
-  getProducts(): Promise<ProductWithCategoriesResponse>;
+  listAll(): Promise<ProductWithCategoriesResponse>;
 
-  addProduct(
+  create(
     productData: Omit<ProductData, "id" | "createdAt">
   ): Promise<ProductData>;
 
-  editProduct(
+  editById(
     productData: Omit<ProductData, "createdAt">
   ): Promise<Omit<ProductData, "createdAt">>;
 
-  deleteProduct(productId: string): Promise<void>;
+  deleteById(productId: string): Promise<void>;
 }

@@ -4,7 +4,7 @@ import { IProductRepository } from "../types/repositories/product-repository.typ
 import { ProductWithCategoriesOnProducts } from "../types/product-with-categories-on-products.type.js";
 
 class ProductRepository implements IProductRepository {
-  async getProductId(id: string): Promise<{ id: string } | null> {
+  async findProductId(id: string): Promise<{ id: string } | null> {
     const productId = await prisma.product.findUnique({
       where: {
         id: id,
@@ -17,7 +17,7 @@ class ProductRepository implements IProductRepository {
     return productId;
   }
 
-  async getProducts(): Promise<ProductWithCategoriesOnProducts[]> {
+  async findMany(): Promise<ProductWithCategoriesOnProducts[]> {
     const products = await prisma.product.findMany({
       omit: {
         createdAt: true,
@@ -38,7 +38,7 @@ class ProductRepository implements IProductRepository {
     return products;
   }
 
-  async addProduct(
+  async create(
     productData: Omit<Product, "id" | "createdAt">
   ): Promise<Product> {
     const addedProduct = await prisma.product.create({
@@ -48,7 +48,7 @@ class ProductRepository implements IProductRepository {
     return addedProduct;
   }
 
-  async editProduct(
+  async edit(
     productData: Omit<Product, "createdAt">
   ): Promise<Omit<Product, "createdAt">> {
     const { id } = productData;
@@ -64,7 +64,7 @@ class ProductRepository implements IProductRepository {
     return editedProduct;
   }
 
-  async deleteProduct(productId: string): Promise<void> {
+  async delete(productId: string): Promise<void> {
     await prisma.product.delete({
       where: {
         id: productId,
@@ -73,6 +73,4 @@ class ProductRepository implements IProductRepository {
   }
 }
 
-const productRepository = new ProductRepository();
-
-export default productRepository;
+export default ProductRepository;

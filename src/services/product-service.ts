@@ -1,17 +1,23 @@
-import productRepository from "../repositories/product-repository.js";
 import { IProductService } from "../types/services/product-service.type.js";
-import productCategoryRepository from "../repositories/product-category-repository.js";
+import ProductCategoryRepository from "../repositories/product-category-repository.js";
 import {
   PRODUCT_CATEGORY_NOT_FOUND,
   PRODUCT_NOT_FOUND,
 } from "../utils/constants.js";
 import { ProductData } from "../types/new-product.type.js";
-import categoriesOnProducts from "../repositories/categories-on-products-repository.js";
 import { ProductWithCategoriesResponse } from "../types/product-with-categories-response.type.js";
+import ProductRepository from "../repositories/product-repository.js";
+import CategoriesOnProductsRepository from "../repositories/categories-on-products-repository.js";
 
 class ProductService implements IProductService {
-  async getProducts(): Promise<ProductWithCategoriesResponse> {
-    const products = await productRepository.getProducts();
+  constructor(
+    private readonly productRepository: ProductRepository,
+    private readonly productCategoryRepository: ProductCategoryRepository,
+    private readonly categoriesOnProductsRepository: CategoriesOnProductsRepository
+  ) {}
+
+  async listAll(): Promise<ProductWithCategoriesResponse> {
+    const products = await this.productRepository.findMany();
 
     const formattedProductsList = products.map((product) => {
       const { id, name, description, priceInCents, categoriesOnProducts } =
@@ -41,7 +47,7 @@ class ProductService implements IProductService {
     return productWithCategoriesResponse;
   }
 
-  async addProduct(
+  async create(
     productData: Omit<ProductData, "id" | "createdAt">
   ): Promise<ProductData> {
     const { productCategoriesId, name, description, priceInCents } =
@@ -49,20 +55,20 @@ class ProductService implements IProductService {
 
     for (const categoryId of productCategoriesId) {
       const searchedProductCategoryId =
-        await productCategoryRepository.getProductCategoryId(categoryId);
+        await this.productCategoryRepository.findProductCategoryId(categoryId);
 
       if (!searchedProductCategoryId)
         throw new Error(PRODUCT_CATEGORY_NOT_FOUND);
     }
 
-    const addedProduct = await productRepository.addProduct({
+    const addedProduct = await this.productRepository.create({
       name,
       description,
       priceInCents,
     });
 
     for (const categoryId of productCategoriesId) {
-      categoriesOnProducts.addCategoryOnProduct(categoryId, addedProduct.id);
+      this.categoriesOnProductsRepository.create(categoryId, addedProduct.id);
     }
 
     return {
@@ -71,45 +77,45 @@ class ProductService implements IProductService {
     };
   }
 
-  async editProduct(
+  async editById(
     productData: Omit<ProductData, "createdAt">
   ): Promise<Omit<ProductData, "createdAt">> {
     const { id, name, description, priceInCents, productCategoriesId } =
       productData;
 
-    const searchedProductId = await productRepository.getProductId(id);
+    const searchedProductId = await this.productRepository.findProductId(id);
 
     if (!searchedProductId) throw new Error(PRODUCT_NOT_FOUND);
 
     for (const categoryId of productCategoriesId) {
       const searchedProductCategoryId =
-        await productCategoryRepository.getProductCategoryId(categoryId);
+        await this.productCategoryRepository.findProductCategoryId(categoryId);
 
       if (!searchedProductCategoryId)
         throw new Error(PRODUCT_CATEGORY_NOT_FOUND);
     }
 
-    const editedProduct = await productRepository.editProduct({
+    const editedProduct = await this.productRepository.edit({
       id,
       name,
       description,
       priceInCents,
     });
 
-    await categoriesOnProducts.editCategoryOnProduct(productCategoriesId, id);
+    await this.categoriesOnProductsRepository.edit(productCategoriesId, id);
 
     return { ...editedProduct, productCategoriesId };
   }
 
-  async deleteProduct(productId: string): Promise<void> {
-    const searchedProductId = await productRepository.getProductId(productId);
+  async deleteById(productId: string): Promise<void> {
+    const searchedProductId = await this.productRepository.findProductId(
+      productId
+    );
 
     if (!searchedProductId) throw new Error(PRODUCT_NOT_FOUND);
 
-    await productRepository.deleteProduct(productId);
+    await this.productRepository.delete(productId);
   }
 }
 
-const productService = new ProductService();
-
-export default productService;
+export default ProductService;

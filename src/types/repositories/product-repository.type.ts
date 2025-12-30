@@ -2,15 +2,15 @@ import { Product } from "@prisma/client";
 import { ProductWithCategoriesOnProducts } from "../product-with-categories-on-products.type.js";
 
 export interface IProductRepository {
-  getProductId(id: string): Promise<{ id: string } | null>;
+  findProductId(id: string): Promise<{ id: string } | null>;
 
-  getProducts(): Promise<ProductWithCategoriesOnProducts[]>;
+  findMany(): Promise<ProductWithCategoriesOnProducts[]>;
 
-  addProduct(productData: Omit<Product, "id" | "createdAt">): Promise<Product>;
+  create(productData: Omit<Product, "id" | "createdAt">): Promise<Product>;
 
-  editProduct(
+  edit(
     productData: Omit<Product, "createdAt">
   ): Promise<Omit<Product, "createdAt">>;
 
-  deleteProduct(productId: string): Promise<void>;
+  delete(productId: string): Promise<void>;
 }
